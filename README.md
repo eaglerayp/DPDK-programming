@@ -73,5 +73,15 @@ init_mem()綁定direct/indirect mempool在CPU socket上, 建立LPM table.
 此例也可以看到如何在一個port建立multi receive queue per core.  
 rte_eth_dev_configure傳入的conf指定哪些NIC的function要開啟, 現在測試用的不能開啟jumbo frame (err=-22代表有些offload功能無法開啟)
 
+##### KNI
+config 讓core 0,1負責port0的接發,2負責port0的KNI thread  
+```
+sudo ./build/kni -c 0x3f -n 4 -- -P -p 0x3 --config="(0,0,1,2),(1,3,4,5)"
+```
+啟用KNI和利用ifconfig vEth0_0 ip up後,還是必須啟用port=promiscuous mode才接收得到封包. 送封包沒問題,但是收不到(why?).
+如果能利用KNI單純的將網卡驅動換成DPDK based 然後接上層應用也有加速效果.
 
+##### layer 3 forwarding (power save)
+由於DPDK會讓dedicated的core無限迴圈得poll packets,所以CPU使用率一直是100%>非常耗電, 所以利用DPDK提供powermanagement library, 可以在偵測rx_queue的traffic低的時候將CPU 調整 P/C state, CPU會調整frequency, 藉此降低耗電.
 
+##### Load balancer
