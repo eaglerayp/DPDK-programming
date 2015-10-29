@@ -16,6 +16,7 @@ multi core流程 example/helloworld
 * rte_eal_alarm_init();  
 * rte_eal_intr_init();  初始化interrupt；  
 * rte_eal_timer_init() ;  
+
 ##### RTE_LCORE_FOREACH_SLAVE (traverse 所有slave core) 並初始建立pipe和thread  
 ```
 RTE_LCORE_FOREACH_SLAVE(lcore_id){
